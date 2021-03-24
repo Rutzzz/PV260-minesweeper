@@ -9,6 +9,13 @@ namespace Minesweeper
         private int NumberOfColumns => Board.GetLength(1);
         public char[,] Board { get; }
 
+        public enum GameState
+        {
+            InProgress,
+        }
+
+        public GameState State = GameState.InProgress;
+
         public Game(bool[,] mines)
         {
             var numberOfRows = mines.GetLength(0);

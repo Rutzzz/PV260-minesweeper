@@ -163,6 +163,40 @@ namespace Minesweeper.Tests
             Assert.That(game.Board, Is.EqualTo(expectedBoard));
         }
 
+        [Test]
+        public void Uncover_GivenBlockingFlags_DoNotUncoverAll()
+        {
+            var mines = new bool[4, 4];
+            var expectedBoard = new[,]
+            {
+                {'.', '.', '.', '.'},
+                {'f', 'f', 'f', 'f'},
+                {'0', '0', '0', '0'},
+                {'0', '0', '0', '0'},
+            };
+
+            var game = new Game(mines);
+            game.FlagTile(2, 1);
+            game.FlagTile(2, 2);
+            game.FlagTile(2, 3);
+            game.FlagTile(2, 4);
+            game.Uncover(4, 4);
+            
+            Assert.That(game.Board, Is.EqualTo(expectedBoard));
+        }
+
+        [Test]
+        public void GameState_GivenUnflaggedMines_InProgress()
+        {
+            var mines = new bool[4, 4];
+            mines[3, 3] = true;
+
+            var game = new Game(mines);
+            Assert.That(game.State, Is.EqualTo(Game.GameState.InProgress));
+            game.Uncover(1, 1);
+            Assert.That(game.State, Is.EqualTo(Game.GameState.InProgress));
+        }
+
         private char[,] CreateFilledBoard(int nrow, int ncol, char cellValue)
         {
             char[,] board = new char[nrow, ncol];
