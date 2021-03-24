@@ -221,6 +221,19 @@ namespace Minesweeper.Tests
             Assert.That(game.State, Is.EqualTo(Game.GameState.Victory));
         }
 
+        [Test]
+        public void GameState_GivenNotFlaggedMine_InProgress()
+        {
+            var mines = new bool[4, 4];
+            mines[1, 1] = true;
+            mines[2, 1] = true;
+
+            var game = new Game(mines);
+            game.FlagTile(2, 2);
+            
+            Assert.That(game.State, Is.EqualTo(Game.GameState.InProgress));
+        }
+
         private char[,] CreateFilledBoard(int nrow, int ncol, char cellValue)
         {
             char[,] board = new char[nrow, ncol];
