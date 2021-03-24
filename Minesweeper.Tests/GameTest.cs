@@ -32,21 +32,23 @@ namespace Minesweeper.Tests
         {
             bool[,] mines = new bool[nrow, ncol];
             Game game = new Game(mines);
-            Assert.That(game.Board, Is.EquivalentTo(CreateEmptyBoard(nrow, ncol)));
+            Assert.That(game.Board, Is.EqualTo(CreateEmptyBoard(nrow, ncol)));
         }
 
-        [Test]
-        public void Uncover_GivenStepsNextToMine_FieldWithNumber()
+        [TestCase(1, 1, 1, 2)]
+        [TestCase(1, 1, 2, 2)]
+        [TestCase(3, 3, 2, 2)]
+        public void Uncover_GivenStepsNextToMine_FieldWithNumber(int mineRow, int mineCol, int posRow, int posCol)
         {
             char[,] expectedBoard = CreateEmptyBoard(4, 4);
-            expectedBoard[0, 1] = '1';
+            expectedBoard[posRow - 1, posCol - 1] = '1';
             bool[,] mines = new bool[4, 4];
-            mines[0, 0] = true;
+            mines[mineRow - 1, mineCol - 1] = true;
             Game game = new Game(mines);
 
-            game.Uncover(1, 2);
+            game.Uncover(posRow, posCol);
 
-            Assert.That(game.Board, Is.EquivalentTo(expectedBoard));
+            Assert.That(game.Board, Is.EqualTo(expectedBoard));
         }
 
 
