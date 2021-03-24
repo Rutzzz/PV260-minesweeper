@@ -24,6 +24,18 @@ namespace Minesweeper.Tests
             bool[,] mines = new bool[nrow, ncol];
             Assert.Throws<ArgumentException>(() => new Game(mines));
         }
+        [Test]
+        public void GetBoard_GivenBoard_EmptyBoard()
+        {
+            bool[,] mines = new bool[3, 3];
+            Game game = new Game(mines);
+            Assert.That(game.Board, Is.EquivalentTo(new char[,]
+            {
+                { '.','.','.' },
+                { '.','.','.' },
+                { '.','.','.' },
+            }));
+        }
 
     }
 }
