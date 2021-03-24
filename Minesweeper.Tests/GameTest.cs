@@ -52,6 +52,18 @@ namespace Minesweeper.Tests
         }
 
         [Test]
+        public void Uncover_GivenNoMines_UncoverAll()
+        {
+            var mines = new bool[5,5];
+            var expectedBoard = CreateFilledBoard(5, 5, '0');
+
+            var game = new Game(mines);
+            game.Uncover(2, 2);
+            
+            Assert.That(game.Board, Is.EqualTo(expectedBoard));
+        }
+
+        [Test]
         public void Uncover_GivenUncoverNextToMultipleMines_FieldWithCorrectNumber()
         {
             const int uncoverRow = 2;
