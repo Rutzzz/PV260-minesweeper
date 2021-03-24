@@ -135,6 +135,20 @@ namespace Minesweeper.Tests
             
             Assert.That(game.Board, Is.EqualTo(expectedBoard));
         }
+                
+        [Test]
+        public void FlagTile_GivenFlaggedTile_FlagRemoved()
+        {
+            var mines = new bool[3, 3];
+            var expectedBoard = CreateFilledBoard(3, 3, '.');
+
+            var game = new Game(mines);
+            game.FlagTile(2, 2);
+            game.FlagTile(2, 2);
+            
+            Assert.That(game.Board, Is.EqualTo(expectedBoard));
+        }
+
         
         [Test]
         public void FlagTile_GivenUncoveredTile_NoFlagPlaced()
