@@ -90,19 +90,35 @@ namespace Minesweeper
             var x = row - 1;
             var y = col - 1;
 
-            if (_mines[x, y])
-            {
-                State = GameState.Victory;
-                return;
-            }
-            else if (IsCovered(x, y))
+            if (IsCovered(x, y))
             {
                 Board[x, y] = 'f';
+
+                if (!ExistsNonFlaggedMine())
+                {
+                    State = GameState.Victory;
+                }
             }
             else if (Board[x, y] == 'f')
             {
                 Board[x, y] = '.';
             }
+        }
+
+        private bool ExistsNonFlaggedMine()
+        {
+            for (var x = 0; x < NumberOfColumns; x++)
+            {
+                for (var y = 0; y < NumberOfRows; y++)
+                {
+                    if (Board[x, y] != 'f' && _mines[x, y])
+                    {
+                        return true;
+                    }        
+                }
+            }
+
+            return false;
         }
 
         private void ForEachNeighbour(int absoluteX, int absoluteY, Action<int, int> callback)
