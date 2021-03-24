@@ -72,7 +72,10 @@ namespace Minesweeper
 
         public void FlagTile(int row, int col)
         {
-            Board[row - 1, col - 1] = 'f';
+            if (IsCovered(row - 1, col - 1))
+            {
+                Board[row - 1, col - 1] = 'f';
+            }
         }
 
         private void ForEachNeighbour(int absoluteX, int absoluteY, Action<int, int> callback)
