@@ -72,9 +72,16 @@ namespace Minesweeper
 
         public void FlagTile(int row, int col)
         {
-            if (IsCovered(row - 1, col - 1))
+            var x = row - 1;
+            var y = col - 1;
+
+            if (IsCovered(x, y))
             {
-                Board[row - 1, col - 1] = 'f';
+                Board[x, y] = 'f';
+            }
+            else if (Board[x, y] == 'f')
+            {
+                Board[x, y] = '.';
             }
         }
 
