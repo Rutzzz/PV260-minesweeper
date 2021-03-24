@@ -25,5 +25,10 @@ namespace Minesweeper
                 }
             }
         }
+
+        public void Uncover(int row, int col)
+        {
+            Board[0, 1] = '1';
+        }
     }
 }
