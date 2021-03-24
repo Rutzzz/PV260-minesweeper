@@ -1,75 +1,94 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 
 namespace Minesweeper
 {
     public class Game
     {
-        private bool[,] _mines;
+        private readonly bool[,] _mines;
         private int NumberOfRows => Board.GetLength(0);
         private int NumberOfColumns => Board.GetLength(1);
         public char[,] Board { get; }
+
         public Game(bool[,] mines)
         {
-            var nrow = mines.GetLength(0);
-            var ncol = mines.GetLength(1);
+            var numberOfRows = mines.GetLength(0);
+            var numberOfColumns = mines.GetLength(1);
 
-            if (nrow < 3 || nrow > 50 || ncol < 3 || ncol > 50)
+            if (numberOfRows < 3 || numberOfRows > 50 || numberOfColumns < 3 || numberOfColumns > 50)
                 throw new ArgumentException("Invalid mines array dimension");
-            
-            Board = new char[nrow, ncol];
-            for (var r = 0; r < nrow; r++)
+
+            Board = new char[numberOfRows, numberOfColumns];
+            for (var x = 0; x < numberOfRows; x++)
             {
-                for (var c = 0; c < ncol; c++)
+                for (var y = 0; y < numberOfColumns; y++)
                 {
-                    Board[r, c] = '.';
+                    Board[x, y] = '.';
                 }
             }
+
             _mines = mines;
         }
 
-        public void Uncover(int row, int col)
+        private void FloodUncover(int absoluteX, int absoluteY)
         {
-            if (Board[row - 1, col - 1] != '.')
+            if (!IsCovered(absoluteX, absoluteY))
             {
                 return;
             }
             
-            var numberOfAdjacentMines = ComputeAdjacentMines(row, col);
-            Board[row - 1, col - 1] = char.Parse(numberOfAdjacentMines.ToString());
+            var numberOfAdjacentMines = GetNumberOfAdjacentMines(absoluteX, absoluteY);
+            Board[absoluteX, absoluteY] = char.Parse(numberOfAdjacentMines.ToString());
 
             if (numberOfAdjacentMines != 0)
             {
                 return;
             }
-            
-            (int ro, int co)[] offsets =
+
+            ForEachNeighbour(absoluteX, absoluteY, FloodUncover);
+        }
+
+        private bool IsCovered(int absoluteX, int absoluteY)
+        {
+            return Board[absoluteX, absoluteY] == '.';
+        }
+
+        public void Uncover(int row, int col)
+        {
+            FloodUncover(row - 1, col - 1);
+        }
+
+        private int GetNumberOfAdjacentMines(int absoluteX, int absoluteY)
+        {
+            var sum = 0;
+            ForEachNeighbour(absoluteX, absoluteY, (x, y) =>
             {
-                (-1,-1),(-1,0),(-1,1),(0,-1),(0,1),(1,-1),(1,0),(1,1)
+                if (_mines[x, y])
+                {
+                    sum += 1;
+                }
+            });
+            return sum;
+        }
+
+        private void ForEachNeighbour(int absoluteX, int absoluteY, Action<int, int> callback)
+        {
+            (int x, int y)[] neighbouringOffsets =
+            {
+                (-1, -1), (-1, 0), (-1, 1), (0, -1), (0, 1), (1, -1), (1, 0), (1, 1)
             };
-            foreach (var (ro, co) in offsets)
+
+            foreach (var (relativeX, relativeY) in neighbouringOffsets)
             {
-                if (row + ro < 1 || row + ro > NumberOfRows || col + co < 1 || col + co > NumberOfColumns)
+                var x = absoluteX + relativeX;
+                var y = absoluteY + relativeY;
+
+                if (x < 0 || x >= NumberOfRows || y < 0 || y >= NumberOfColumns)
                 {
                     continue;
                 }
-                Uncover(row + ro, col + co);
-            }
-            
-        }
 
-        private int ComputeAdjacentMines(int row, int col)
-        {
-            (int ro, int co)[] offsets =
-            {
-                (-1,-1),(-1,0),(-1,1),(0,-1),(0,1),(1,-1),(1,0),(1,1)
-            };
-            return offsets
-                .Select(t => (row + t.ro - 1, col + t.co - 1))
-                .Where(t => t.Item1 >= 0 && t.Item1 < NumberOfRows && t.Item2 >= 0 && t.Item2 < NumberOfColumns)
-                .Count(t => _mines[t.Item1, t.Item2]);
+                callback(x, y);
+            }
         }
     }
 }
