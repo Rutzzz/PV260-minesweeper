@@ -56,14 +56,10 @@ namespace Minesweeper
             ForEachNeighbour(absoluteX, absoluteY, FloodUncover);
         }
 
-        private bool IsCovered(int absoluteX, int absoluteY)
-        {
-            return Board[absoluteX, absoluteY] == '.';
-        }
 
         public void Uncover(int row, int col)
         {
-            if (_mines[row - 1, col - 1])
+            if (IsMine(row, col))
             {
                 State = GameState.Defeat;
                 return;
@@ -71,6 +67,7 @@ namespace Minesweeper
             
             FloodUncover(row - 1, col - 1);
         }
+
 
         private int GetNumberOfAdjacentMines(int absoluteX, int absoluteY)
         {
@@ -99,26 +96,10 @@ namespace Minesweeper
                     State = GameState.Victory;
                 }
             }
-            else if (Board[x, y] == 'f')
+            else if (IsFlagged(x, y))
             {
                 Board[x, y] = '.';
             }
-        }
-
-        private bool ExistsNonFlaggedMine()
-        {
-            for (var x = 0; x < NumberOfColumns; x++)
-            {
-                for (var y = 0; y < NumberOfRows; y++)
-                {
-                    if (Board[x, y] != 'f' && _mines[x, y])
-                    {
-                        return true;
-                    }        
-                }
-            }
-
-            return false;
         }
 
         private void ForEachNeighbour(int absoluteX, int absoluteY, Action<int, int> callback)
@@ -140,6 +121,38 @@ namespace Minesweeper
 
                 callback(x, y);
             }
+        }
+        
+
+        private bool IsFlagged(int x, int y)
+        {
+            return Board[x, y] == 'f';
+        }
+        
+        private bool IsMine(int row, int col)
+        {
+            return _mines[row - 1, col - 1];
+        }
+        
+        private bool IsCovered(int absoluteX, int absoluteY)
+        {
+            return Board[absoluteX, absoluteY] == '.';
+        }
+
+        private bool ExistsNonFlaggedMine()
+        {
+            for (var x = 0; x < NumberOfColumns; x++)
+            {
+                for (var y = 0; y < NumberOfRows; y++)
+                {
+                    if (Board[x, y] != 'f' && _mines[x, y])
+                    {
+                        return true;
+                    }        
+                }
+            }
+
+            return false;
         }
     }
 }
