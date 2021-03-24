@@ -10,12 +10,16 @@ namespace Minesweeper
         public char[,] Board { get; }
         public Game(bool[,] mines)
         {
-            if (mines.GetLength(0) < 3 || mines.GetLength(0) > 50 || mines.GetLength(1) < 3 || mines.GetLength(1) > 50)
+            var nrow = mines.GetLength(0);
+            var ncol = mines.GetLength(1);
+
+            if (nrow < 3 || nrow > 50 || ncol < 3 || ncol > 50)
                 throw new ArgumentException("Invalid mines array dimension");
-            Board = new char[mines.GetLength(0), mines.GetLength(1)];
-            for (int r = 0; r < mines.GetLength(0); r++)
+            
+            Board = new char[nrow, ncol];
+            for (var r = 0; r < nrow; r++)
             {
-                for (int c = 0; c < mines.GetLength(1); c++)
+                for (var c = 0; c < ncol; c++)
                 {
                     Board[r, c] = '.';
                 }
