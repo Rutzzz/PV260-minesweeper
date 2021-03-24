@@ -35,7 +35,7 @@ namespace Minesweeper
             {
                 return;
             }
-            
+
             var numberOfAdjacentMines = GetNumberOfAdjacentMines(absoluteX, absoluteY);
             Board[absoluteX, absoluteY] = char.Parse(numberOfAdjacentMines.ToString());
 
@@ -68,6 +68,11 @@ namespace Minesweeper
                 }
             });
             return sum;
+        }
+
+        public void FlagTile(int row, int col)
+        {
+            Board[row - 1, col - 1] = 'f';
         }
 
         private void ForEachNeighbour(int absoluteX, int absoluteY, Action<int, int> callback)

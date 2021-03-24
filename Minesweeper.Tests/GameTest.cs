@@ -62,6 +62,42 @@ namespace Minesweeper.Tests
             
             Assert.That(game.Board, Is.EqualTo(expectedBoard));
         }
+        
+        [Test]
+        public void Uncover_GivenAMine_DoNotUncoverMine() 
+        {
+            var mines = new bool[5,5];
+            mines[0, 0] = true;
+            var expectedBoard = CreateFilledBoard(5, 5, '0');
+            expectedBoard[0, 0] = '.';
+            expectedBoard[1, 0] = '1';
+            expectedBoard[0, 1] = '1';
+            expectedBoard[1, 1] = '1';
+
+            var game = new Game(mines);
+            game.Uncover(3, 3);
+            
+            Assert.That(game.Board, Is.EqualTo(expectedBoard));
+        }
+        
+        [Test]
+        public void Uncover_GivenMultipleMines_DoNotUncoverUnreachable() 
+        {
+            var mines = new bool[4, 4];
+            mines[1, 1] = true;
+            var expectedBoard = new[,]
+            {
+                {'.', '.', '1', '0'},
+                {'.', '.', '1', '0'},
+                {'1', '1', '1', '0'},
+                {'0', '0', '0', '0'},
+            };
+
+            var game = new Game(mines);
+            game.Uncover(4, 4);
+            
+            Assert.That(game.Board, Is.EqualTo(expectedBoard));
+        }
 
         [Test]
         public void Uncover_GivenUncoverNextToMultipleMines_FieldWithCorrectNumber()
@@ -87,6 +123,18 @@ namespace Minesweeper.Tests
             Assert.That(game.Board[1, 1], Is.EqualTo(expectedCell));
         }
 
+        [Test]
+        public void FlagTile_GivenFlagTile_FlagOnBoard()
+        {
+            var mines = new bool[3, 3];
+            var expectedBoard = CreateFilledBoard(3, 3, '.');
+            expectedBoard[1, 1] = 'f';
+
+            var game = new Game(mines);
+            game.FlagTile(2, 2);
+            
+            Assert.That(game.Board, Is.EqualTo(expectedBoard));
+        }
 
         private char[,] CreateFilledBoard(int nrow, int ncol, char cellValue)
         {
