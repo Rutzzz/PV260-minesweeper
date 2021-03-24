@@ -32,7 +32,32 @@ namespace Minesweeper
 
         public void Uncover(int row, int col)
         {
-            Board[row - 1, col - 1] = char.Parse(ComputeAdjacentMines(row, col).ToString());
+            if (Board[row - 1, col - 1] != '.')
+            {
+                return;
+            }
+            
+            var numberOfAdjacentMines = ComputeAdjacentMines(row, col);
+            Board[row - 1, col - 1] = char.Parse(numberOfAdjacentMines.ToString());
+
+            if (numberOfAdjacentMines != 0)
+            {
+                return;
+            }
+            
+            (int ro, int co)[] offsets =
+            {
+                (-1,-1),(-1,0),(-1,1),(0,-1),(0,1),(1,-1),(1,0),(1,1)
+            };
+            foreach (var (ro, co) in offsets)
+            {
+                if (row + ro < 1 || row + ro > NumberOfRows || col + co < 1 || col + co > NumberOfColumns)
+                {
+                    continue;
+                }
+                Uncover(row + ro, col + co);
+            }
+            
         }
 
         private int ComputeAdjacentMines(int row, int col)
