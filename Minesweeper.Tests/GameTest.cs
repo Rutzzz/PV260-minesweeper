@@ -87,6 +87,18 @@ namespace Minesweeper.Tests
             Assert.That(game.Board[1, 1], Is.EqualTo(expectedCell));
         }
 
+        [Test]
+        public void FlagTile_GivenFlagTile_FlagOnBoard()
+        {
+            var mines = new bool[3, 3];
+            var expectedBoard = CreateFilledBoard(3, 3, '.');
+            expectedBoard[1, 1] = 'f';
+
+            var game = new Game(mines);
+            game.FlagTile(2, 2);
+            
+            Assert.That(game.Board, Is.EqualTo(expectedBoard));
+        }
 
         private char[,] CreateFilledBoard(int nrow, int ncol, char cellValue)
         {
