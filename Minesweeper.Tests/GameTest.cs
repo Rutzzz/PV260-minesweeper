@@ -5,7 +5,6 @@ namespace Minesweeper.Tests
 {
     public class GameTest
     {
-
         [Test]
         public void Constructor_GivenCorrectDimensions_CreateGame()
         {
@@ -13,7 +12,7 @@ namespace Minesweeper.Tests
             new Game(mines);
         }
 
-        [TestCase(2,2)]
+        [TestCase(2, 2)]
         [TestCase(2, 3)]
         [TestCase(3, 2)]
         [TestCase(51, 51)]
@@ -24,10 +23,11 @@ namespace Minesweeper.Tests
             bool[,] mines = new bool[nrow, ncol];
             Assert.Throws<ArgumentException>(() => new Game(mines));
         }
+
         [Test]
-        [TestCase(3,3)]
-        [TestCase(6,10)]
-        [TestCase(45,50)]
+        [TestCase(3, 3)]
+        [TestCase(6, 10)]
+        [TestCase(45, 50)]
         public void GetBoard_GivenBoard_EmptyBoard(int nrow, int ncol)
         {
             bool[,] mines = new bool[nrow, ncol];
@@ -51,6 +51,30 @@ namespace Minesweeper.Tests
             Assert.That(game.Board, Is.EqualTo(expectedBoard));
         }
 
+        [Test]
+        public void Uncover_GivenUncoverNextToMultipleMines_FieldWithCorrectNumber()
+        {
+            const int uncoverRow = 2;
+            const int uncoverCol = 2;
+            var minePositions = new[]
+            {
+                (1, 2),
+                (2, 1)
+            };
+            var expectedCell = char.Parse(minePositions.Length.ToString());
+
+            var mines = new bool[4, 4];
+            foreach (var (col, row) in minePositions)
+            {
+                mines[col, row] = true;
+            }
+
+            var game = new Game(mines);
+            game.Uncover(uncoverRow, uncoverCol);
+            
+            Assert.That(game.Board[1, 1], Is.EqualTo(expectedCell));
+        }
+
 
         private char[,] CreateEmptyBoard(int nrow, int ncol)
         {
@@ -62,6 +86,7 @@ namespace Minesweeper.Tests
                     board[r, c] = '.';
                 }
             }
+
             return board;
         }
     }
