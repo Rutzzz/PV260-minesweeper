@@ -196,6 +196,30 @@ namespace Minesweeper.Tests
             game.Uncover(1, 1);
             Assert.That(game.State, Is.EqualTo(Game.GameState.InProgress));
         }
+        
+        [Test]
+        public void GameState_GivenUncoveredMine_Defeat()
+        {
+            var mines = new bool[4, 4];
+            mines[1, 1] = true;
+
+            var game = new Game(mines);
+            game.Uncover(2, 2);
+            
+            Assert.That(game.State, Is.EqualTo(Game.GameState.Defeat));
+        }
+        
+        [Test]
+        public void GameState_GivenUncoveredMine_Victory()
+        {
+            var mines = new bool[4, 4];
+            mines[1, 1] = true;
+
+            var game = new Game(mines);
+            game.FlagTile(2, 2);
+            
+            Assert.That(game.State, Is.EqualTo(Game.GameState.Victory));
+        }
 
         private char[,] CreateFilledBoard(int nrow, int ncol, char cellValue)
         {

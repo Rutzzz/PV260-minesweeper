@@ -12,6 +12,8 @@ namespace Minesweeper
         public enum GameState
         {
             InProgress,
+            Defeat,
+            Victory,
         }
 
         public GameState State = GameState.InProgress;
@@ -61,6 +63,12 @@ namespace Minesweeper
 
         public void Uncover(int row, int col)
         {
+            if (_mines[row - 1, col - 1])
+            {
+                State = GameState.Defeat;
+                return;
+            }
+            
             FloodUncover(row - 1, col - 1);
         }
 
@@ -82,7 +90,12 @@ namespace Minesweeper
             var x = row - 1;
             var y = col - 1;
 
-            if (IsCovered(x, y))
+            if (_mines[x, y])
+            {
+                State = GameState.Victory;
+                return;
+            }
+            else if (IsCovered(x, y))
             {
                 Board[x, y] = 'f';
             }
