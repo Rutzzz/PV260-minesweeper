@@ -40,8 +40,8 @@ namespace Minesweeper.Tests
         [TestCase(3, 3, 2, 2)]
         public void Uncover_GivenStepsNextToMine_FieldWithNumber(int mineRow, int mineCol, int posRow, int posCol)
         {
-            char[,] expectedBoard = CreateFilledBoard(4, 4, '.');
-            expectedBoard[posRow - 1, posCol - 1] = '1';
+            Board expectedBoard = CreateFilledBoard(4, 4, '.');
+            expectedBoard[posRow, posCol] = '1';
             bool[,] mines = new bool[4, 4];
             mines[mineRow - 1, mineCol - 1] = true;
             Game game = new Game(mines);
@@ -69,10 +69,10 @@ namespace Minesweeper.Tests
             var mines = new bool[5,5];
             mines[0, 0] = true;
             var expectedBoard = CreateFilledBoard(5, 5, '0');
-            expectedBoard[0, 0] = '.';
-            expectedBoard[1, 0] = '1';
-            expectedBoard[0, 1] = '1';
-            expectedBoard[1, 1] = '1';
+            expectedBoard[1, 1] = '.';
+            expectedBoard[2, 1] = '1';
+            expectedBoard[1, 2] = '1';
+            expectedBoard[2, 2] = '1';
 
             var game = new Game(mines);
             game.Uncover(3, 3);
@@ -85,13 +85,13 @@ namespace Minesweeper.Tests
         {
             var mines = new bool[4, 4];
             mines[1, 1] = true;
-            var expectedBoard = new[,]
+            var expectedBoard = new Board(new[,]
             {
                 {'.', '.', '1', '0'},
                 {'.', '.', '1', '0'},
                 {'1', '1', '1', '0'},
                 {'0', '0', '0', '0'},
-            };
+            });
 
             var game = new Game(mines);
             game.Uncover(4, 4);
@@ -102,25 +102,22 @@ namespace Minesweeper.Tests
         [Test]
         public void Uncover_GivenUncoverNextToMultipleMines_FieldWithCorrectNumber()
         {
-            const int uncoverRow = 2;
-            const int uncoverCol = 2;
-            var minePositions = new[]
+            var mineCoords = new[]
             {
                 (1, 2),
                 (2, 1)
             };
-            var expectedCell = char.Parse(minePositions.Length.ToString());
 
             var mines = new bool[4, 4];
-            foreach (var (col, row) in minePositions)
+            foreach (var (col, row) in mineCoords)
             {
-                mines[col, row] = true;
+                mines[col - 1, row - 1] = true;
             }
 
             var game = new Game(mines);
-            game.Uncover(uncoverRow, uncoverCol);
+            game.Uncover(2, 2);
             
-            Assert.That(game.Board[1, 1], Is.EqualTo(expectedCell));
+            Assert.That(game.Board[2, 2], Is.EqualTo('2'));
         }
 
         [Test]
@@ -128,7 +125,7 @@ namespace Minesweeper.Tests
         {
             var mines = new bool[3, 3];
             var expectedBoard = CreateFilledBoard(3, 3, '.');
-            expectedBoard[1, 1] = 'f';
+            expectedBoard[2, 2] = 'f';
 
             var game = new Game(mines);
             game.FlagTile(2, 2);
@@ -167,13 +164,13 @@ namespace Minesweeper.Tests
         public void Uncover_GivenBlockingFlags_DoNotUncoverAll()
         {
             var mines = new bool[4, 4];
-            var expectedBoard = new[,]
+            var expectedBoard = new Board(new[,]
             {
                 {'.', '.', '.', '.'},
                 {'f', 'f', 'f', 'f'},
                 {'0', '0', '0', '0'},
                 {'0', '0', '0', '0'},
-            };
+            });
 
             var game = new Game(mines);
             game.FlagTile(2, 1);
@@ -234,7 +231,7 @@ namespace Minesweeper.Tests
             Assert.That(game.State, Is.EqualTo(Game.GameState.InProgress));
         }
 
-        private char[,] CreateFilledBoard(int nrow, int ncol, char cellValue)
+        private Board CreateFilledBoard(int nrow, int ncol, char cellValue)
         {
             char[,] board = new char[nrow, ncol];
             for (int r = 0; r < nrow; r++)
@@ -244,8 +241,7 @@ namespace Minesweeper.Tests
                     board[r, c] = cellValue;
                 }
             }
-
-            return board;
+            return new Board(board);
         }
     }
 }
