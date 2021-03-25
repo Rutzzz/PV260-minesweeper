@@ -5,9 +5,7 @@ namespace Minesweeper
     public class Game
     {
         private readonly bool[,] _mines;
-        private int NumberOfRows => Board.GetLength(0);
-        private int NumberOfColumns => Board.GetLength(1);
-        public char[,] Board { get; }
+        public Board Board { get; }
 
         public enum GameState
         {
@@ -26,34 +24,26 @@ namespace Minesweeper
             if (numberOfRows < 3 || numberOfRows > 50 || numberOfColumns < 3 || numberOfColumns > 50)
                 throw new ArgumentException("Invalid mines array dimension");
 
-            Board = new char[numberOfRows, numberOfColumns];
-            for (var x = 0; x < numberOfRows; x++)
-            {
-                for (var y = 0; y < numberOfColumns; y++)
-                {
-                    Board[x, y] = '.';
-                }
-            }
-
+            Board = new Board(numberOfRows, numberOfColumns);
             _mines = mines;
         }
 
-        private void FloodUncover(int absoluteX, int absoluteY)
+        private void FloodUncover(int row, int col)
         {
-            if (!IsCovered(absoluteX, absoluteY))
+            if (!IsCovered(row, col))
             {
                 return;
             }
 
-            var numberOfAdjacentMines = GetNumberOfAdjacentMines(absoluteX, absoluteY);
-            Board[absoluteX, absoluteY] = char.Parse(numberOfAdjacentMines.ToString());
+            var numberOfAdjacentMines = GetNumberOfAdjacentMines(row, col);
+            Board[row, col] = char.Parse(numberOfAdjacentMines.ToString());
 
             if (numberOfAdjacentMines != 0)
             {
                 return;
             }
 
-            ForEachNeighbour(absoluteX, absoluteY, FloodUncover);
+            ForEachNeighbour(row, col, FloodUncover);
         }
 
 
@@ -65,16 +55,16 @@ namespace Minesweeper
                 return;
             }
             
-            FloodUncover(row - 1, col - 1);
+            FloodUncover(row, col);
         }
 
 
-        private int GetNumberOfAdjacentMines(int absoluteX, int absoluteY)
+        private int GetNumberOfAdjacentMines(int row, int col)
         {
             var sum = 0;
-            ForEachNeighbour(absoluteX, absoluteY, (x, y) =>
+            ForEachNeighbour(row, col, (r, c) =>
             {
-                if (_mines[x, y])
+                if (IsMine(r,c))
                 {
                     sum += 1;
                 }
@@ -84,25 +74,22 @@ namespace Minesweeper
 
         public void FlagTile(int row, int col)
         {
-            var x = row - 1;
-            var y = col - 1;
-
-            if (IsCovered(x, y))
+            if (IsCovered(row, col))
             {
-                Board[x, y] = 'f';
+                Board[row, col] = 'f';
 
                 if (!ExistsNonFlaggedMine())
                 {
                     State = GameState.Victory;
                 }
             }
-            else if (IsFlagged(x, y))
+            else if (IsFlagged(row, col))
             {
-                Board[x, y] = '.';
+                Board[row, col] = '.';
             }
         }
 
-        private void ForEachNeighbour(int absoluteX, int absoluteY, Action<int, int> callback)
+        private void ForEachNeighbour(int row, int col, Action<int, int> callback)
         {
             (int x, int y)[] neighbouringOffsets =
             {
@@ -111,10 +98,10 @@ namespace Minesweeper
 
             foreach (var (relativeX, relativeY) in neighbouringOffsets)
             {
-                var x = absoluteX + relativeX;
-                var y = absoluteY + relativeY;
+                var x = row + relativeX;
+                var y = col + relativeY;
 
-                if (x < 0 || x >= NumberOfRows || y < 0 || y >= NumberOfColumns)
+                if (x <= 0 || x > Board.NumberOfRows || y <= 0 || y > Board.NumberOfColumns)
                 {
                     continue;
                 }
@@ -124,9 +111,9 @@ namespace Minesweeper
         }
         
 
-        private bool IsFlagged(int x, int y)
+        private bool IsFlagged(int row, int col)
         {
-            return Board[x, y] == 'f';
+            return Board[row, col] == 'f';
         }
         
         private bool IsMine(int row, int col)
@@ -134,18 +121,18 @@ namespace Minesweeper
             return _mines[row - 1, col - 1];
         }
         
-        private bool IsCovered(int absoluteX, int absoluteY)
+        private bool IsCovered(int row, int col)
         {
-            return Board[absoluteX, absoluteY] == '.';
+            return Board[row, col] == '.';
         }
 
         private bool ExistsNonFlaggedMine()
         {
-            for (var x = 0; x < NumberOfColumns; x++)
+            for (var row = 1; row <= Board.NumberOfRows; row++)
             {
-                for (var y = 0; y < NumberOfRows; y++)
+                for (var col = 1; col <= Board.NumberOfColumns; col++)
                 {
-                    if (Board[x, y] != 'f' && _mines[x, y])
+                    if (!IsFlagged(row, col) && IsMine(row, col))
                     {
                         return true;
                     }        
