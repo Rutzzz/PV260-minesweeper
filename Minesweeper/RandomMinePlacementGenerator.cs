@@ -9,6 +9,8 @@ namespace Minesweeper
         private Random _rng;
         public RandomMinePlacementGenerator(int rows, int cols)
         {
+            if (rows < 0 || cols < 0)
+                throw new ArgumentException("Invalid argument.");
             _rows = rows;
             _cols = cols;
             _rng = new Random();
