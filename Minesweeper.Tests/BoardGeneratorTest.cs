@@ -23,5 +23,23 @@ namespace Minesweeper.Tests
                 BoardGenerator.Generate(11, 10, density)
             );
         }
+        
+        [Test]
+        public void Generate_CorrectMineCount()
+        {
+            int cnt = 0;
+            int numberOfRows = 10, numberOfCols = 10;
+            var minefield = BoardGenerator.Generate(numberOfRows, numberOfCols, 0.2f);
+            
+            for (int row = 0; row < numberOfRows; ++row)
+            {
+                for (int col = 0; col < numberOfCols; ++col)
+                {
+                    cnt += (minefield[row, col]) ? 1 : 0;
+                }
+            }
+            
+            Assert.AreEqual(cnt, 20);
+        }
     }
 }
