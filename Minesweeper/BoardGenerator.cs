@@ -14,15 +14,14 @@ namespace Minesweeper
             
             var retval = new bool[numberOfRows,numberOfColumns];
             int mines = Convert.ToInt32(numberOfRows * numberOfColumns * density);
-
-            for (int i = 0; i < numberOfRows; ++i)
+            
+            while (mines > 0)
             {
-                for (int j = 0; j < numberOfColumns; ++j)
-                {
-                    if (mines-- <= 0)
-                        return retval;
-                    retval[i, j] = true;
-                }
+                var coord = generator.Next();
+                if (retval[coord.Item1, coord.Item2])
+                    continue;
+                retval[coord.Item1,coord.Item2] = true;
+                mines--;
             }
 
             return retval;
