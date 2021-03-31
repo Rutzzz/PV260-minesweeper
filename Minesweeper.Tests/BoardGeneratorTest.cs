@@ -88,5 +88,16 @@ namespace Minesweeper.Tests
             
             Assert.AreEqual(Convert.ToInt32(numberOfRows*numberOfColumns*density), cnt);
         }
+        
+        [Test]
+        [TestCase(10, 10, 0.5f, 1)]
+        public void Generate_SmallEntropy_Throws(int numberOfRows, int numberOfColumns, float density, int poolSize)
+        {
+            var generator = new Mod2MineGenerator(poolSize, poolSize);
+            Assert.Throws<NullReferenceException>(() => BoardGenerator.Generate(
+                generator,
+                numberOfRows,
+                numberOfColumns, 0.5f));
+        }
     }
 }
