@@ -70,5 +70,23 @@ namespace Minesweeper.Tests
         {
             Assert.DoesNotThrow(() => BoardGenerator.Generate(null, numberOfRows, numberOfColumns, density ));
         }
+        
+        [Test]
+        [TestCase(10,10, 0.2f)]
+        public void Generate_ValidDensity_RandomGeneratorMinefieldIsValid(int numberOfRows, int numberOfColumns, float density)
+        {
+            var minefield = BoardGenerator.Generate(null, numberOfRows, numberOfColumns, density);
+
+            int cnt = 0;
+            for (int row = 0; row < numberOfRows; ++row)
+            {
+                for (int col = 0; col < numberOfColumns; ++col)
+                {
+                    cnt += (minefield[row, col]) ? 1 : 0;
+                }
+            }
+            
+            Assert.AreEqual(Convert.ToInt32(numberOfRows*numberOfColumns*density), cnt);
+        }
     }
 }
