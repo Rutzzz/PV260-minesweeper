@@ -63,5 +63,12 @@ namespace Minesweeper.Tests
             
             Assert.AreEqual(expected, minefield);
         }
+        
+        [Test]
+        [TestCase(10,10, 0.2f)]
+        public void Generate_ValidDensity_RandomGeneratorSucceeds(int numberOfRows, int numberOfColumns, float density)
+        {
+            Assert.DoesNotThrow(() => BoardGenerator.Generate(null, numberOfRows, numberOfColumns, density ));
+        }
     }
 }
