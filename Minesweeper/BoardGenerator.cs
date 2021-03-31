@@ -12,6 +12,9 @@ namespace Minesweeper
             if (density < 0.2 || density > 0.6)
                 throw new ArgumentException("Invalid mine density given.");
             
+            if (generator == null)
+                generator = new RandomMinePlacementGenerator(numberOfRows, numberOfColumns);
+            
             var retval = new bool[numberOfRows,numberOfColumns];
             int mines = Convert.ToInt32(numberOfRows * numberOfColumns * density);
             
