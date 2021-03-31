@@ -12,7 +12,20 @@ namespace Minesweeper
             if (density < 0.2 || density > 0.6)
                 throw new ArgumentException("Invalid mine density given.");
             
-            return null;
+            var retval = new bool[numberOfRows,numberOfColumns];
+            int mines = Convert.ToInt32(numberOfRows * numberOfColumns * density);
+
+            for (int i = 0; i < numberOfRows; ++i)
+            {
+                for (int j = 0; j < numberOfColumns; ++j)
+                {
+                    if (mines-- <= 0)
+                        return retval;
+                    retval[i, j] = true;
+                }
+            }
+
+            return retval;
         }
     }
 }
