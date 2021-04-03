@@ -45,6 +45,7 @@ namespace Minesweeper
             if (IsMine(row, col))
             {
                 State = GameState.Defeat;
+                Board[row, col] = 'x';
                 return;
             }
             
