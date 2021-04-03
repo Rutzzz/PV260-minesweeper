@@ -121,6 +121,20 @@ namespace Minesweeper.Tests
         }
 
         [Test]
+        public void Uncover_GivenUncoverMine_MineShowsOnBoard()
+        {
+            var mines = new bool[3, 3];
+            mines[1, 1] = true;
+            var expectedBoard = CreateFilledBoard(3, 3, '.');
+            expectedBoard[2, 2] = 'x';
+
+            Game game = new Game(mines);
+            game.Uncover(2,2);
+            Assert.That(game.State, Is.EqualTo(Game.GameState.Defeat));
+            Assert.That(game.Board, Is.EqualTo(expectedBoard));
+        }
+
+        [Test]
         public void FlagTile_GivenFlagTile_FlagOnBoard()
         {
             var mines = new bool[3, 3];
