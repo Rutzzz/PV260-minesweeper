@@ -7,19 +7,19 @@ namespace Minesweeper
 {
     public class Board
     {
-        private char[,] _board;
+        private readonly char[,] _board;
 
         public Board(char[,] board)
         {
             _board = board;
         }
 
-        public Board(int nrow, int ncol)
+        public Board(int numberOfRows, int numberOfColumns)
         {
-            _board = new char[nrow, ncol];
-            for (int r = 0; r < nrow; r++)
+            _board = new char[numberOfRows, numberOfColumns];
+            for (var r = 0; r < numberOfRows; r++)
             {
-                for (int c = 0; c < ncol; c++)
+                for (var c = 0; c < numberOfColumns; c++)
                 {
                     _board[r, c] ='.';
                 }
@@ -39,13 +39,15 @@ namespace Minesweeper
         public override bool Equals(object? other)
         {
             var otherBoard = other as Board;
+            
             if (otherBoard == null) return false;
             if (NumberOfRows != otherBoard.NumberOfRows || NumberOfColumns != otherBoard.NumberOfColumns) return false;
-            for (int r = 1; r <= NumberOfRows; r++)
+            
+            for (var row = 1; row <= NumberOfRows; row++)
             {
-                for (int c = 1; c <= NumberOfColumns; c++)
+                for (var col = 1; col <= NumberOfColumns; col++)
                 {
-                    if (this[r, c] != otherBoard[r, c]) return false;
+                    if (this[row, col] != otherBoard[row, col]) return false;
                 }
             }
             return true;
