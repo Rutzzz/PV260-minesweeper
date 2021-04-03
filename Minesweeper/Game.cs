@@ -30,20 +30,13 @@ namespace Minesweeper
 
         private void FloodUncover(int row, int col)
         {
-            if (!IsCovered(row, col))
-            {
-                return;
-            }
+            if (!IsCovered(row, col)) return;
 
             var numberOfAdjacentMines = GetNumberOfAdjacentMines(row, col);
             Board[row, col] = char.Parse(numberOfAdjacentMines.ToString());
 
-            if (numberOfAdjacentMines != 0)
-            {
-                return;
-            }
-
-            ForEachNeighbour(row, col, FloodUncover);
+            if (numberOfAdjacentMines == 0)
+               ForEachNeighbour(row, col, FloodUncover);
         }
 
 
@@ -65,9 +58,7 @@ namespace Minesweeper
             ForEachNeighbour(row, col, (r, c) =>
             {
                 if (IsMine(r, c))
-                {
                     sum += 1;
-                }
             });
             return sum;
         }
@@ -78,10 +69,7 @@ namespace Minesweeper
             {
                 Board[row, col] = 'f';
 
-                if (!ExistsNonFlaggedMine())
-                {
-                    State = GameState.Victory;
-                }
+                CheckVictory();
             }
             else if (IsFlagged(row, col))
             {
@@ -89,27 +77,34 @@ namespace Minesweeper
             }
         }
 
-        private void ForEachNeighbour(int row, int col, Action<int, int> callback)
+        private void CheckVictory()
         {
-            (int x, int y)[] neighbouringOffsets =
+            if (!ExistsNonFlaggedMine())
+                State = GameState.Victory;
+        }
+
+        private void ForEachNeighbour(int absoluteRow, int absoluteCol, Action<int, int> callback)
+        {
+            (int row, int col)[] neighbouringOffsets =
             {
                 (-1, -1), (-1, 0), (-1, 1), (0, -1), (0, 1), (1, -1), (1, 0), (1, 1)
             };
 
-            foreach (var (relativeX, relativeY) in neighbouringOffsets)
+            foreach (var (relativeRow, relativeCol) in neighbouringOffsets)
             {
-                var x = row + relativeX;
-                var y = col + relativeY;
+                var row = absoluteRow + relativeRow;
+                var col = absoluteCol + relativeCol;
 
-                if (x <= 0 || x > Board.NumberOfRows || y <= 0 || y > Board.NumberOfColumns)
-                {
-                    continue;
-                }
-
-                callback(x, y);
+                if (IsValidPosition(row, col))
+                    callback(row, col);
             }
         }
-        
+
+        private bool IsValidPosition(int row, int col)
+        {
+            return row >= 1 && row <= Board.NumberOfRows && col >= 1 && col <= Board.NumberOfColumns;
+        }
+
 
         private bool IsFlagged(int row, int col)
         {
@@ -133,9 +128,7 @@ namespace Minesweeper
                 for (var col = 1; col <= Board.NumberOfColumns; col++)
                 {
                     if (!IsFlagged(row, col) && IsMine(row, col))
-                    {
                         return true;
-                    }        
                 }
             }
 
