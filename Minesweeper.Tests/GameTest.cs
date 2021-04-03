@@ -231,14 +231,14 @@ namespace Minesweeper.Tests
             Assert.That(game.State, Is.EqualTo(Game.GameState.InProgress));
         }
 
-        private Board CreateFilledBoard(int nrow, int ncol, char cellValue)
+        private static Board CreateFilledBoard(int numberOfRows, int numberOfColumns, char cellValue)
         {
-            char[,] board = new char[nrow, ncol];
-            for (int r = 0; r < nrow; r++)
+            var board = new char[numberOfRows, numberOfColumns];
+            for (var x = 0; x < numberOfRows; x++)
             {
-                for (int c = 0; c < ncol; c++)
+                for (var y = 0; y < numberOfColumns; y++)
                 {
-                    board[r, c] = cellValue;
+                    board[x, y] = cellValue;
                 }
             }
             return new Board(board);
