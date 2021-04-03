@@ -231,6 +231,84 @@ namespace Minesweeper.Tests
             Assert.That(game.State, Is.EqualTo(Game.GameState.InProgress));
         }
 
+        [Test]
+        public void ComplexScenario_GivenWinningSequenceOfMoves_Win()
+        {
+            bool[,] mines =
+            {
+                {true, false, false, true},
+                {true, false, false, false},
+                {true, false, false, false},
+            };
+            Game game = new Game(mines);
+            Board expectedBoard = CreateFilledBoard(3, 4, '.');
+            Assert.That(game.Board, Is.EqualTo(expectedBoard));
+
+            AssertUncoverResult(game,2,4, Game.GameState.InProgress, new [,]
+            {
+                {'.','.','.','.'},
+                {'.','.','.','1'},
+                {'.','.','.','.'},
+            });
+
+            AssertUncoverResult(game, 3,4, Game.GameState.InProgress, new [,]
+            {
+                {'.','.','.','.'},
+                {'.','3','1','1'},
+                {'.','2','0','0'},
+            });
+
+            AssertUncoverResult(game, 1, 2, Game.GameState.InProgress, new[,]
+            {
+                {'.','2','.','.'},
+                {'.','3','1','1'},
+                {'.','2','0','0'},
+            });
+
+            AssertFlagTileResult(game, 3, 1, Game.GameState.InProgress, new[,]
+            {
+                {'.','2','.','.'},
+                {'.','3','1','1'},
+                {'f','2','0','0'},
+            });
+
+            AssertFlagTileResult(game, 2, 1, Game.GameState.InProgress, new[,]
+            {
+                {'.','2','.','.'},
+                {'f','3','1','1'},
+                {'f','2','0','0'},
+            });
+
+            AssertFlagTileResult(game, 1, 1, Game.GameState.InProgress, new[,]
+            {
+                {'f','2','.','.'},
+                {'f','3','1','1'},
+                {'f','2','0','0'},
+            });
+
+            AssertFlagTileResult(game, 1, 4, Game.GameState.Victory, new[,]
+            {
+                {'f','2','.','f'},
+                {'f','3','1','1'},
+                {'f','2','0','0'},
+            });
+        }
+
+        private static void AssertUncoverResult(Game game, int rowSelection, int colSelection, Game.GameState expectedState, char[,] expectedBoard)
+        {
+            game.Uncover(rowSelection, colSelection);
+            Assert.That(game.Board, Is.EqualTo(new Board(expectedBoard)));
+            Assert.That(game.State, Is.EqualTo(expectedState));
+        }
+
+
+        private static void AssertFlagTileResult(Game game, int rowSelection, int colSelection, Game.GameState expectedState, char[,] expectedBoard)
+        {
+            game.FlagTile(rowSelection, colSelection);
+            Assert.That(game.Board, Is.EqualTo(new Board(expectedBoard)));
+            Assert.That(game.State, Is.EqualTo(expectedState));
+        }
+
         private static Board CreateFilledBoard(int numberOfRows, int numberOfColumns, char cellValue)
         {
             var board = new char[numberOfRows, numberOfColumns];
