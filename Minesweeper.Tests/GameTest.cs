@@ -294,6 +294,47 @@ namespace Minesweeper.Tests
             });
         }
 
+        [Test]
+        public void ComplexScenario_GivenLosingSequenceOfMoves_Lose()
+        {
+            bool[,] mines =
+            {
+                {true, false, true, true},
+                {false, false, true, false},
+                {false, false, true, true},
+            };
+            Game game = new Game(mines);
+            Assert.That(game.Board, Is.EqualTo(CreateFilledBoard(3,4,'.')));
+
+            AssertUncoverResult(game, 3, 1, Game.GameState.InProgress, new [,]
+            {
+                {'.','.','.','.'},
+                {'1','4','.','.'},
+                {'0','2','.','.'},
+            });
+
+            AssertFlagTileResult(game, 1, 1, Game.GameState.InProgress, new[,]
+            {
+                {'f','.','.','.'},
+                {'1','4','.','.'},
+                {'0','2','.','.'},
+            });
+
+            AssertUncoverResult(game, 2, 4, Game.GameState.InProgress, new[,]
+            {
+                {'f','.','.','.'},
+                {'1','4','.','5'},
+                {'0','2','.','.'},
+            });
+
+            AssertUncoverResult(game, 3, 3, Game.GameState.Defeat, new[,]
+            {
+                {'f','.','.','.'},
+                {'1','4','.','5'},
+                {'0','2','x','.'},
+            });
+        }
+
         private static void AssertUncoverResult(Game game, int rowSelection, int colSelection, Game.GameState expectedState, char[,] expectedBoard)
         {
             game.Uncover(rowSelection, colSelection);
