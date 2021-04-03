@@ -49,7 +49,7 @@ namespace Minesweeper
 
         public void Uncover(int row, int col)
         {
-            if (IsMine(row, col))
+            if (IsMine(row - 1, col - 1))
             {
                 State = GameState.Defeat;
                 return;
@@ -64,7 +64,7 @@ namespace Minesweeper
             var sum = 0;
             ForEachNeighbour(row, col, (r, c) =>
             {
-                if (IsMine(r,c))
+                if (IsMine(x, y))
                 {
                     sum += 1;
                 }
@@ -116,9 +116,9 @@ namespace Minesweeper
             return Board[row, col] == 'f';
         }
         
-        private bool IsMine(int row, int col)
+        private bool IsMine(int x, int y)
         {
-            return _mines[row - 1, col - 1];
+            return _mines[x, y];
         }
         
         private bool IsCovered(int row, int col)
