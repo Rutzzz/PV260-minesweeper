@@ -4,6 +4,10 @@ namespace Minesweeper
 {
     public class Game
     {
+        public const char FlagChar = 'f';
+        public const char MineChar = 'x';
+        public const char UncoveredChar = '.';
+
         private readonly bool[,] _mines;
         public Board Board { get; }
 
@@ -45,7 +49,7 @@ namespace Minesweeper
             if (IsMine(row, col))
             {
                 State = GameState.Defeat;
-                Board[row, col] = 'x';
+                Board[row, col] = MineChar;
                 return;
             }
             
@@ -68,13 +72,13 @@ namespace Minesweeper
         {
             if (IsCovered(row, col))
             {
-                Board[row, col] = 'f';
+                Board[row, col] = FlagChar;
 
                 CheckVictory();
             }
             else if (IsFlagged(row, col))
             {
-                Board[row, col] = '.';
+                Board[row, col] = UncoveredChar;
             }
         }
 
@@ -109,7 +113,7 @@ namespace Minesweeper
 
         private bool IsFlagged(int row, int col)
         {
-            return Board[row, col] == 'f';
+            return Board[row, col] == FlagChar;
         }
         
         private bool IsMine(int row, int col)
@@ -119,7 +123,7 @@ namespace Minesweeper
         
         private bool IsCovered(int row, int col)
         {
-            return Board[row, col] == '.';
+            return Board[row, col] == UncoveredChar;
         }
 
         private bool ExistsNonFlaggedMine()
