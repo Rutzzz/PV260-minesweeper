@@ -6,7 +6,8 @@ namespace Minesweeper
     public class Mod2MineGenerator : IMinePlacementGenerator
     {
         private int _returned;
-        private List<Tuple<int,int>> _coords;
+        private List<Tuple<int, int>> _coords;
+
         public Mod2MineGenerator(int rows, int cols)
         {
             _coords = new List<Tuple<int, int>>();
@@ -27,7 +28,7 @@ namespace Minesweeper
             get => _coords;
         }
 
-        public Tuple<int,int> Next()
+        public Tuple<int, int> Next()
         {
             return (_returned >= _coords.Count) ? null : _coords[_returned++];
         }

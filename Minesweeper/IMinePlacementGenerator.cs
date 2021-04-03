@@ -4,6 +4,6 @@ namespace Minesweeper
 {
     public interface IMinePlacementGenerator
     {
-        public Tuple<int,int> Next();
+        public Tuple<int, int> Next();
     }
 }
