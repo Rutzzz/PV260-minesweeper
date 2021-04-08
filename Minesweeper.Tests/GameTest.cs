@@ -258,14 +258,14 @@ namespace Minesweeper.Tests
             Board expectedBoard = CreateFilledBoard(3, 4, '.');
             Assert.That(game.Board, Is.EqualTo(expectedBoard));
 
-            AssertUncoverResult(game,2,4, Game.GameState.InProgress, new [,]
+            AssertUncoverResult(game, 2, 4, Game.GameState.InProgress, new [,]
             {
                 {'.','.','.','.'},
                 {'.','.','.','1'},
                 {'.','.','.','.'},
             });
 
-            AssertUncoverResult(game, 3,4, Game.GameState.InProgress, new [,]
+            AssertUncoverResult(game, 3, 4, Game.GameState.InProgress, new [,]
             {
                 {'.','.','.','.'},
                 {'.','3','1','1'},
@@ -355,7 +355,6 @@ namespace Minesweeper.Tests
             Assert.That(game.Board, Is.EqualTo(new Board(expectedBoard)));
             Assert.That(game.State, Is.EqualTo(expectedState));
         }
-
 
         private static void AssertFlagTileResult(Game game, int rowSelection, int colSelection, Game.GameState expectedState, char[,] expectedBoard)
         {
